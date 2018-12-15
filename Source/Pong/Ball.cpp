@@ -12,6 +12,8 @@ ABall::ABall()
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawnMovement");
 
+	StaticMesh->OnComponentHit.AddDynamic(this, &ABall::OnComponentHit);
+
 }
 
 // Called when the game starts or when spawned
@@ -33,8 +35,11 @@ void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	FVector direction = GetActorForwardVector();
-	AddMovementInput(direction, speed * DeltaTime);
+	if (isMoving)
+	{
+		FVector direction = GetActorForwardVector();
+		AddMovementInput(direction, speed * DeltaTime);
+	}
 }
 
 // Called to bind functionality to input
@@ -42,5 +47,15 @@ void ABall::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
+{
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	{
+		isMoving = false;
+		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
+	}
+	
 }
 

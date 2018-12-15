@@ -46,6 +46,11 @@ public:
 	UPROPERTY()
 	float Roll = 0.0f;
 
+	UPROPERTY()
+	bool isMoving = true;
+
+	UFUNCTION()
+	void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 
 };
