@@ -21,11 +21,9 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Yaw = 45.0f;
-	FRotator rotation = FRotator(Pitch, Yaw, Roll);
-
+	// Rotate on start
+	FRotator rotation = FRotator(Pitch, 45.0f, Roll);
 	FQuat fQuat = FQuat(rotation);
-
 	AddActorLocalRotation(fQuat);
 	
 }
@@ -53,20 +51,55 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		FString BPWallsName = "BP_Walls";
-		if (OtherActor->GetName().Contains(BPWallsName))
-		{
-			RotateOnHit();
-		}
+		RotateOnHit(*OtherActor->GetName());
 
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
+		/*if (GEngine)
+		{
+			FString msg = GetActorRotation().ToString();
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *msg));
+		}*/
 	}
 	
 }
 
-void ABall::RotateOnHit()
+void ABall::RotateOnHit(FString OtherActorName)
 {
-	FRotator rotation = FRotator(Pitch, 90.0f, Roll);
+	float YawRotation, YawActor;
+	YawActor = GetActorRotation().Yaw;
+
+
+	
+	if (OtherActorName.Contains(WallsName))
+	{
+		if ((YawActor > 0.0f && YawActor < 90.0f) ||
+			(YawActor > 180.0f && YawActor < 270.0f))
+		{
+			YawRotation = 90.0f;
+		}
+		else
+		{
+			YawRotation = -90.0f;
+		}
+	}
+
+	if (OtherActorName.Contains(PlayerName))
+	{
+		if ((YawActor > 0.0f && YawActor < 90.0f) ||
+			(YawActor > 180.0f && YawActor < 270.0f))
+		{
+			YawRotation = -90.0f;
+		}
+		else
+		{
+			YawRotation = 90.0f;
+		}
+	}
+
+	/*if (YawActor < 180.0f) YawRotation = 90.0f;
+	else YawRotation = -90.0f;*/
+
+	FRotator rotation = FRotator(Pitch, YawRotation, Roll);
 	FQuat fQuat = FQuat(rotation);
 	AddActorLocalRotation(fQuat);
 }
