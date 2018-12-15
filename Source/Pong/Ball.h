@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Walls.h"
 #include "Ball.generated.h"
 
 UCLASS()
@@ -41,7 +42,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* StaticMesh;
+	UStaticMeshComponent* BallMesh;
 
 	UPROPERTY()
 	UFloatingPawnMovement* FloatingPawnMovement;
@@ -59,6 +60,6 @@ public:
 	void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
 	UFUNCTION()
-	void RotateOnHit(FString OtherActorName);
+	void RotateOnHit(AActor* OtherActor);
 
 };

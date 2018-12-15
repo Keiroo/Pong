@@ -9,10 +9,10 @@ ABall::ABall()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Set default components
-	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>("StaticMesh");
+	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>("BallMesh");
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawnMovement");
 
-	StaticMesh->OnComponentHit.AddDynamic(this, &ABall::OnComponentHit);
+	BallMesh->OnComponentHit.AddDynamic(this, &ABall::OnComponentHit);
 
 }
 
@@ -51,7 +51,7 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		RotateOnHit(*OtherActor->GetName());
+		RotateOnHit(OtherActor);
 
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
 		if (GEngine)
@@ -67,14 +67,14 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 	
 }
 
-void ABall::RotateOnHit(FString OtherActorName)
+void ABall::RotateOnHit(AActor* OtherActor)
 {
 	float YawRotation, YawActor;
 	YawActor = GetActorRotation().Yaw;
 
 
 	
-	if (OtherActorName.Contains(WallsName))
+	if (OtherActor->IsA(AWalls::StaticClass()))
 	{
 		if ((YawActor > 0.0f && YawActor < 90.0f) ||
 			(YawActor > -180.0f && YawActor < -90.0f))
@@ -87,7 +87,7 @@ void ABall::RotateOnHit(FString OtherActorName)
 		}
 	}
 
-	if (OtherActorName.Contains(PlayerName))
+	/*if (OtherActorName.Contains(PlayerName))
 	{
 		if ((YawActor > 0.0f && YawActor < 90.0f) ||
 			(YawActor > -180.0f && YawActor < -90.0f))
@@ -98,10 +98,7 @@ void ABall::RotateOnHit(FString OtherActorName)
 		{
 			YawRotation = 90.0f;
 		}
-	}
-
-	/*if (YawActor < 180.0f) YawRotation = 90.0f;
-	else YawRotation = -90.0f;*/
+	}*/
 
 	FRotator rotation = FRotator(Pitch, YawRotation, Roll);
 	FQuat fQuat = FQuat(rotation);
