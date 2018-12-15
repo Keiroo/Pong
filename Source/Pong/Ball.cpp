@@ -18,6 +18,13 @@ ABall::ABall()
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Yaw = 45.0f;
+	FRotator rotation = FRotator(Pitch, Yaw, Roll);
+
+	FQuat fQuat = FQuat(rotation);
+
+	AddActorLocalRotation(fQuat);
 	
 }
 
@@ -28,7 +35,6 @@ void ABall::Tick(float DeltaTime)
 
 	FVector direction = GetActorForwardVector();
 	AddMovementInput(direction, speed * DeltaTime);
-
 }
 
 // Called to bind functionality to input

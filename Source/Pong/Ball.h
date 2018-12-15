@@ -36,5 +36,16 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float speed = 1.0f;
+		
+	UPROPERTY()
+	float Pitch = 0.0f;
+
+	UPROPERTY()
+	float Yaw = 0.0f;
+
+	UPROPERTY()
+	float Roll = 0.0f;
+
+
 
 };
