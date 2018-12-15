@@ -22,7 +22,7 @@ void ABall::BeginPlay()
 	Super::BeginPlay();
 
 	// Rotate on start
-	FRotator rotation = FRotator(Pitch, 45.0f, Roll);
+	FRotator rotation = FRotator(Pitch, 46.0f, Roll);
 	FQuat fQuat = FQuat(rotation);
 	AddActorLocalRotation(fQuat);
 	
@@ -54,11 +54,15 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 		RotateOnHit(*OtherActor->GetName());
 
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
-		/*if (GEngine)
+		if (GEngine)
 		{
 			FString msg = GetActorRotation().ToString();
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *msg));
-		}*/
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s"), *msg));
+		}
+
+		// Move Ball to prevent hitting twice
+		FVector direction = GetActorForwardVector();
+		AddMovementInput(direction, speed * FApp::GetDeltaTime());
 	}
 	
 }
@@ -73,7 +77,7 @@ void ABall::RotateOnHit(FString OtherActorName)
 	if (OtherActorName.Contains(WallsName))
 	{
 		if ((YawActor > 0.0f && YawActor < 90.0f) ||
-			(YawActor > 180.0f && YawActor < 270.0f))
+			(YawActor > -180.0f && YawActor < -90.0f))
 		{
 			YawRotation = 90.0f;
 		}
@@ -86,7 +90,7 @@ void ABall::RotateOnHit(FString OtherActorName)
 	if (OtherActorName.Contains(PlayerName))
 	{
 		if ((YawActor > 0.0f && YawActor < 90.0f) ||
-			(YawActor > 180.0f && YawActor < 270.0f))
+			(YawActor > -180.0f && YawActor < -90.0f))
 		{
 			YawRotation = -90.0f;
 		}
