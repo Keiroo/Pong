@@ -90,7 +90,7 @@ void ABall::RotateOnHit(AActor* OtherActor)
 		}
 	}
 
-	/*if (OtherActorName.Contains(PlayerName))
+	if (OtherActor->IsA(AMyPlayer::StaticClass()))
 	{
 		if ((YawActor > 0.0f && YawActor < 90.0f) ||
 			(YawActor > -180.0f && YawActor < -90.0f))
@@ -101,7 +101,7 @@ void ABall::RotateOnHit(AActor* OtherActor)
 		{
 			YawRotation = 90.0f;
 		}
-	}*/
+	}
 
 	FRotator rotation = FRotator(Pitch, YawRotation, Roll);
 	FQuat fQuat = FQuat(rotation);

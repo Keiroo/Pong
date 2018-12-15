@@ -7,6 +7,7 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Walls.h"
+#include "MyPlayer.h"
 #include "Ball.generated.h"
 
 UCLASS()
