@@ -53,7 +53,12 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		isMoving = false;
+		FString BPWallsName = "BP_Walls";
+		if (OtherActor->GetName().Contains(BPWallsName))
+		{
+			isMoving = false;
+		}
+
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
 	}
 	
