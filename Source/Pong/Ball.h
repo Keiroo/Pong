@@ -62,4 +62,7 @@ public:
 	UFUNCTION()
 	void RotateOnHit(AActor* OtherActor);
 
+	UPROPERTY(EditAnywhere)
+	bool DebugLog = false;
+
 };

@@ -53,11 +53,14 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 	{
 		RotateOnHit(OtherActor);
 
-		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
-		if (GEngine)
+		if (DebugLog)
 		{
-			FString msg = GetActorRotation().ToString();
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s"), *msg));
+			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
+			if (GEngine)
+			{
+				FString msg = GetActorRotation().ToString();
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s"), *msg));
+			}
 		}
 
 		// Move Ball to prevent hitting twice
