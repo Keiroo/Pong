@@ -56,11 +56,18 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 		FString BPWallsName = "BP_Walls";
 		if (OtherActor->GetName().Contains(BPWallsName))
 		{
-			isMoving = false;
+			RotateOnHit();
 		}
 
 		if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
 	}
 	
+}
+
+void ABall::RotateOnHit()
+{
+	FRotator rotation = FRotator(Pitch, 90.0f, Roll);
+	FQuat fQuat = FQuat(rotation);
+	AddActorLocalRotation(fQuat);
 }
 
