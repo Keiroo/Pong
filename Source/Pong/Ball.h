@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Components/SphereComponent.h"
+#include "GameFramework/FloatingPawnMovement.h"
 #include "Ball.generated.h"
 
 UCLASS()
@@ -25,5 +27,14 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* StaticMesh;
+
+	UPROPERTY()
+	UFloatingPawnMovement* FloatingPawnMovement;
+
+	UPROPERTY(EditAnywhere)
+	float speed = 1.0f;
 
 };
