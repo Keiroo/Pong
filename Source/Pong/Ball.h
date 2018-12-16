@@ -67,6 +67,9 @@ public:
 	float CalcRotAngleOnWallHit();
 
 	UFUNCTION()
+	float CalcRotAngleOnPlayerHit(AActor* OtherActor);
+
+	UFUNCTION()
 	float CalcAngleBetweenVectors(FVector Vector1, FVector Vector2);
 
 };

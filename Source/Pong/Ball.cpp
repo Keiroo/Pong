@@ -85,15 +85,6 @@ void ABall::RotateOnHit(AActor* OtherActor)
 		{
 			ResYaw = -CalcRotAngleOnWallHit();
 		}
-
-		if (DebugLog)
-		{
-			if (GEngine)
-			{
-				FString msg = FString::SanitizeFloat(ResYaw);
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Rotation after calc: %s"), *msg));
-			}
-		}
 	}
 
 	if (OtherActor->IsA(AMyPlayer::StaticClass()))
@@ -101,14 +92,15 @@ void ABall::RotateOnHit(AActor* OtherActor)
 		if ((ActorYaw > 0.0f && ActorYaw < 90.0f) ||
 			(ActorYaw > -180.0f && ActorYaw < -90.0f))
 		{
-			ResYaw = -90.0f;
+			ResYaw = -CalcRotAngleOnPlayerHit(OtherActor);
 		}
 		else
 		{
-			ResYaw = 90.0f;
+			ResYaw = CalcRotAngleOnPlayerHit(OtherActor);
 		}
 	}
 
+	// Rotate ball
 	FRotator rotation = FRotator(Pitch, ResYaw, Roll);
 	FQuat fQuat = FQuat(rotation);
 	AddActorLocalRotation(fQuat);
@@ -127,8 +119,19 @@ float ABall::CalcRotAngleOnWallHit()
 	FVector ActorVector, ResVector;
 	ActorVector = GetActorForwardVector();
 
-	// Reverse the Y value
+	// Reverse the X value
 	ResVector = FVector(-ActorVector.X, ActorVector.Y, ActorVector.Z);
+
+	return CalcAngleBetweenVectors(ActorVector, ResVector);
+}
+
+float ABall::CalcRotAngleOnPlayerHit(AActor * OtherActor)
+{
+	FVector ActorVector, ResVector;
+	ActorVector = GetActorForwardVector();
+
+	// Reverse the Y value
+	ResVector = FVector(ActorVector.X, -ActorVector.Y, ActorVector.Z);
 
 	return CalcAngleBetweenVectors(ActorVector, ResVector);
 }
