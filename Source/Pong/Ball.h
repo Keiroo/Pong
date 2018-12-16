@@ -63,4 +63,10 @@ public:
 	UFUNCTION()
 	void RandomRotate();
 
+	UFUNCTION()
+	float CalcRotAngleOnWallHit();
+
+	UFUNCTION()
+	float CalcAngleBetweenVectors(FVector Vector1, FVector Vector2);
+
 };

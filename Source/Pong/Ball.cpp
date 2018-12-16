@@ -56,7 +56,7 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 			if (GEngine)
 			{
 				FString msg = GetActorRotation().ToString();
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s"), *msg));
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Current rotation: %s"), *msg));
 			}
 		}
 
@@ -69,38 +69,47 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 
 void ABall::RotateOnHit(AActor* OtherActor)
 {
-	float YawRotation, YawActor;
-	YawActor = GetActorRotation().Yaw;
+	float ResYaw, ActorYaw;
+	ActorYaw = GetActorRotation().Yaw;
 
 
 	
 	if (OtherActor->IsA(AWalls::StaticClass()))
 	{
-		if ((YawActor > 0.0f && YawActor < 90.0f) ||
-			(YawActor > -180.0f && YawActor < -90.0f))
+		if ((ActorYaw > 0.0f && ActorYaw < 90.0f) ||
+			(ActorYaw > -180.0f && ActorYaw < -90.0f))
 		{
-			YawRotation = 90.0f;
+			ResYaw = CalcRotAngleOnWallHit();
 		}
 		else
 		{
-			YawRotation = -90.0f;
+			ResYaw = -CalcRotAngleOnWallHit();
+		}
+
+		if (DebugLog)
+		{
+			if (GEngine)
+			{
+				FString msg = FString::SanitizeFloat(ResYaw);
+				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Rotation after calc: %s"), *msg));
+			}
 		}
 	}
 
 	if (OtherActor->IsA(AMyPlayer::StaticClass()))
 	{
-		if ((YawActor > 0.0f && YawActor < 90.0f) ||
-			(YawActor > -180.0f && YawActor < -90.0f))
+		if ((ActorYaw > 0.0f && ActorYaw < 90.0f) ||
+			(ActorYaw > -180.0f && ActorYaw < -90.0f))
 		{
-			YawRotation = -90.0f;
+			ResYaw = -90.0f;
 		}
 		else
 		{
-			YawRotation = 90.0f;
+			ResYaw = 90.0f;
 		}
 	}
 
-	FRotator rotation = FRotator(Pitch, YawRotation, Roll);
+	FRotator rotation = FRotator(Pitch, ResYaw, Roll);
 	FQuat fQuat = FQuat(rotation);
 	AddActorLocalRotation(fQuat);
 }
@@ -112,4 +121,22 @@ void ABall::RandomRotate()
 	FQuat fQuat = FQuat(rotation);
 	AddActorLocalRotation(fQuat);
 }
+
+float ABall::CalcRotAngleOnWallHit()
+{
+	FVector ActorVector, ResVector;
+	ActorVector = GetActorForwardVector();
+
+	// Reverse the Y value
+	ResVector = FVector(-ActorVector.X, ActorVector.Y, ActorVector.Z);
+
+	return CalcAngleBetweenVectors(ActorVector, ResVector);
+}
+
+float ABall::CalcAngleBetweenVectors(FVector Vector1, FVector Vector2)
+{	
+	return FMath::RadiansToDegrees(acosf(FVector::DotProduct(Vector1, Vector2)));
+}
+
+
 
