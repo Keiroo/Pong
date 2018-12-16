@@ -21,11 +21,8 @@ void ABall::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Rotate on start
-	FRotator rotation = FRotator(Pitch, 46.0f, Roll);
-	FQuat fQuat = FQuat(rotation);
-	AddActorLocalRotation(fQuat);
-	
+	// Random rotate on start
+	RandomRotate();
 }
 
 // Called every frame
@@ -104,6 +101,14 @@ void ABall::RotateOnHit(AActor* OtherActor)
 	}
 
 	FRotator rotation = FRotator(Pitch, YawRotation, Roll);
+	FQuat fQuat = FQuat(rotation);
+	AddActorLocalRotation(fQuat);
+}
+
+void ABall::RandomRotate()
+{
+	float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
+	FRotator rotation = FRotator(Pitch, rotateValue, Roll);
 	FQuat fQuat = FQuat(rotation);
 	AddActorLocalRotation(fQuat);
 }

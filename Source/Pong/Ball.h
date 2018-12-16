@@ -51,11 +51,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	float speed = 1.0f;
 
-	UPROPERTY(EditAnywhere, Category = HitNames)
-	FString WallsName = "BP_Walls";
-
-	UPROPERTY(EditAnywhere, Category = HitNames)
-	FString PlayerName = "BP_Player";
+	UPROPERTY(EditAnywhere)
+	bool DebugLog = false;
 
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -63,7 +60,7 @@ public:
 	UFUNCTION()
 	void RotateOnHit(AActor* OtherActor);
 
-	UPROPERTY(EditAnywhere)
-	bool DebugLog = false;
+	UFUNCTION()
+	void RandomRotate();
 
 };
