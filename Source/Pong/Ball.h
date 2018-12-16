@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Walls.h"
 #include "MyPlayer.h"
 #include "Ball.generated.h"
@@ -28,6 +29,17 @@ private:
 	UPROPERTY()
 	bool isMoving = true;
 
+	UPROPERTY()
+	bool isOverlapping = false;
+
+	UFUNCTION()
+	void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	void OnOverlapEnd(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -49,13 +61,16 @@ public:
 	UFloatingPawnMovement* FloatingPawnMovement;
 
 	UPROPERTY(EditAnywhere)
-	float speed = 1.0f;
+	float Speed = 1.0f;
+
+	UPROPERTY(EditAnywhere)
+	float MaxBounceAngle = 75.0f;
 
 	UPROPERTY(EditAnywhere)
 	bool DebugLog = false;
 
-	UFUNCTION()
-	void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	UPROPERTY()
+	float ActorZ;
 
 	UFUNCTION()
 	void RotateOnHit(AActor* OtherActor);
@@ -67,9 +82,12 @@ public:
 	float CalcRotAngleOnWallHit();
 
 	UFUNCTION()
-	float CalcRotAngleOnPlayerHit(AActor* OtherActor);
+	FVector CalcRotVectorOnPlayerHit(AActor* OtherActor);
 
 	UFUNCTION()
 	float CalcAngleBetweenVectors(FVector Vector1, FVector Vector2);
+
+	UFUNCTION()
+	void DebugMsg(FString msg);
 
 };
