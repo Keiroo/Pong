@@ -16,14 +16,6 @@ class PONG_API ABall : public APawn
 	GENERATED_BODY()
 
 private:
-	UPROPERTY()
-	float Pitch = 0.0f;
-
-	UPROPERTY()
-	float Yaw = 0.0f;
-
-	UPROPERTY()
-	float Roll = 0.0f;
 
 	UPROPERTY()
 	bool isMoving = true;
@@ -61,7 +53,7 @@ public:
 	UFloatingPawnMovement* FloatingPawnMovement;
 
 	UPROPERTY(EditAnywhere)
-	float speed = 1.0f;
+	float BallSpeed = 1.0f;
 
 	UPROPERTY(EditAnywhere)
 	float MaxBounceAngle = 75.0f;

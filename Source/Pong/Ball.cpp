@@ -8,7 +8,7 @@ ABall::ABall()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Set default components
+	// Create default components
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>("BallMesh");
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawnMovement");
 
@@ -30,8 +30,8 @@ void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// Timer to prevent multiple rotations
 	if (hasHit) hitTimer += DeltaTime;
-
 	if (hitTimer >= maxHitTimer)
 	{
 		hasHit = false;
@@ -40,7 +40,7 @@ void ABall::Tick(float DeltaTime)
 
 	if (isMoving)
 	{
-		AddMovementInput(movingDirection, speed * DeltaTime);
+		AddMovementInput(movingDirection, BallSpeed * DeltaTime);
 	}
 }
 
@@ -60,19 +60,11 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 			RotateOnHit(OtherActor);
 			hasHit = true;
 		}
-
-		// Move Ball to prevent hitting twice
-		/*FVector direction = GetActorForwardVector();
-		AddMovementInput(direction, speed * FApp::GetDeltaTime());*/
-	}
-	
+	}	
 }
 
 void ABall::RotateOnHit(AActor* OtherActor)
 {
-	/*float ResYaw, ActorYaw;
-	ActorYaw = GetActorRotation().Yaw;*/
-
 	if (OtherActor->IsA(AWalls::StaticClass()))
 	{
 		ChangeDirectionOnWallHit();
@@ -86,9 +78,8 @@ void ABall::RotateOnHit(AActor* OtherActor)
 
 void ABall::RandomRotate()
 {
-	//float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
-	float rotateValue = 89.0f;
-	FRotator rotator = FRotator(Pitch, rotateValue, Roll);
+	float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
+	FRotator rotator = FRotator(0.0f, rotateValue, 0.0f);
 	movingDirection = rotator.RotateVector(GetActorForwardVector());
 }
 
