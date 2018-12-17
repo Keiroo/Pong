@@ -31,6 +31,15 @@ private:
 	UPROPERTY()
 	FVector movingDirection;
 
+	UPROPERTY()
+	bool hasHit = false;
+
+	UPROPERTY()
+	float hitTimer = 0.0f;
+
+	UPROPERTY()
+	float maxHitTimer = 0.1f;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -55,7 +64,7 @@ public:
 	float speed = 1.0f;
 
 	UPROPERTY(EditAnywhere)
-	bool DebugLog = false;
+	bool DebugPrint = false;
 
 	UFUNCTION()
 	void OnComponentHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
@@ -67,7 +76,7 @@ public:
 	void RandomRotate();
 
 	UFUNCTION()
-	float CalcRotAngleOnWallHit();
+	void ChangeDirectionOnWallHit();
 
 	UFUNCTION()
 	float CalcRotAngleOnPlayerHit(AActor* OtherActor);
@@ -75,4 +84,6 @@ public:
 	UFUNCTION()
 	float CalcAngleBetweenVectors(FVector Vector1, FVector Vector2);
 
+	UFUNCTION()
+	void PrintOnScreen(FString message);
 };

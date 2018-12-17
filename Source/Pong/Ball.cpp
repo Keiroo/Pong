@@ -30,6 +30,14 @@ void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (hasHit) hitTimer += DeltaTime;
+
+	if (hitTimer >= maxHitTimer)
+	{
+		hasHit = false;
+		hitTimer = 0.0f;
+	}
+
 	if (isMoving)
 	{
 		AddMovementInput(movingDirection, speed * DeltaTime);
@@ -47,21 +55,15 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		RotateOnHit(OtherActor);
-
-		if (DebugLog)
+		if (!hasHit)
 		{
-			if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("I Hit: %s"), *OtherActor->GetName()));
-			if (GEngine)
-			{
-				FString msg = GetActorRotation().ToString();
-				GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("Current rotation: %s"), *msg));
-			}
+			RotateOnHit(OtherActor);
+			hasHit = true;
 		}
 
 		// Move Ball to prevent hitting twice
-		FVector direction = GetActorForwardVector();
-		AddMovementInput(direction, speed * FApp::GetDeltaTime());
+		/*FVector direction = GetActorForwardVector();
+		AddMovementInput(direction, speed * FApp::GetDeltaTime());*/
 	}
 	
 }
@@ -75,15 +77,7 @@ void ABall::RotateOnHit(AActor* OtherActor)
 	
 	if (OtherActor->IsA(AWalls::StaticClass()))
 	{
-		if ((ActorYaw > 0.0f && ActorYaw < 90.0f) ||
-			(ActorYaw > -180.0f && ActorYaw < -90.0f))
-		{
-			ResYaw = CalcRotAngleOnWallHit();
-		}
-		else
-		{
-			ResYaw = -CalcRotAngleOnWallHit();
-		}
+		ChangeDirectionOnWallHit();
 	}
 
 	if (OtherActor->IsA(AMyPlayer::StaticClass()))
@@ -99,29 +93,30 @@ void ABall::RotateOnHit(AActor* OtherActor)
 		}
 	}
 
-	// Rotate ball
-	FRotator rotation = FRotator(Pitch, ResYaw, Roll);
-	FQuat fQuat = FQuat(rotation);
-	AddActorLocalRotation(fQuat);
+
+	
 }
 
 void ABall::RandomRotate()
 {
-	float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
+	//float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
+	float rotateValue = 50.0f;
 	FRotator rotator = FRotator(Pitch, rotateValue, Roll);
 	movingDirection = rotator.RotateVector(GetActorForwardVector());
 }
 
-float ABall::CalcRotAngleOnWallHit()
+void ABall::ChangeDirectionOnWallHit()
 {
-	FVector ActorVector, ResVector;
-	ActorVector = GetActorForwardVector();
-
 	// Reverse the X value
-	ResVector = FVector(-ActorVector.X, ActorVector.Y, ActorVector.Z);
+	movingDirection = FVector(-movingDirection.X, movingDirection.Y, movingDirection.Z);
 
-	return CalcAngleBetweenVectors(ActorVector, ResVector);
+	if (DebugPrint)
+	{
+		PrintOnScreen(movingDirection.ToString());
+	}	
 }
+
+
 
 float ABall::CalcRotAngleOnPlayerHit(AActor * OtherActor)
 {
@@ -137,6 +132,14 @@ float ABall::CalcRotAngleOnPlayerHit(AActor * OtherActor)
 float ABall::CalcAngleBetweenVectors(FVector Vector1, FVector Vector2)
 {	
 	return FMath::RadiansToDegrees(acosf(FVector::DotProduct(Vector1, Vector2)));
+}
+
+void ABall::PrintOnScreen(FString message)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("%s"), *message));
+	}
 }
 
 
