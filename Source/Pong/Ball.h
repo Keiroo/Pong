@@ -67,8 +67,9 @@ public:
 	UFUNCTION()
 	void RotateOnHit(AActor* OtherActor);
 
-	UFUNCTION()
-	void RandomRotate();
+	// True = Right, False = Left
+	UFUNCTION(BlueprintCallable)
+	void RandomRotate(bool direction);
 
 	UFUNCTION()
 	void ChangeDirectionOnWallHit();

@@ -22,7 +22,7 @@ void ABall::BeginPlay()
 	Super::BeginPlay();
 
 	// Random rotate on start
-	RandomRotate();
+	RandomRotate(true);
 }
 
 // Called every frame
@@ -76,11 +76,13 @@ void ABall::RotateOnHit(AActor* OtherActor)
 	}	
 }
 
-void ABall::RandomRotate()
+void ABall::RandomRotate(bool direction)
 {
-	float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
+	float rotateValue = FMath::FRandRange(-MaxBounceAngle, MaxBounceAngle);
 	FRotator rotator = FRotator(0.0f, rotateValue, 0.0f);
-	movingDirection = rotator.RotateVector(GetActorForwardVector());
+
+	if (direction) movingDirection = rotator.RotateVector(GetActorRightVector());
+	else movingDirection = rotator.RotateVector(GetActorRightVector());
 }
 
 void ABall::ChangeDirectionOnWallHit()
