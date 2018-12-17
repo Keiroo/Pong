@@ -28,6 +28,9 @@ private:
 	UPROPERTY()
 	bool isMoving = true;
 
+	UPROPERTY()
+	FVector movingDirection;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -32,8 +32,7 @@ void ABall::Tick(float DeltaTime)
 
 	if (isMoving)
 	{
-		FVector direction = GetActorForwardVector();
-		AddMovementInput(direction, speed * DeltaTime);
+		AddMovementInput(movingDirection, speed * DeltaTime);
 	}
 }
 
@@ -109,9 +108,8 @@ void ABall::RotateOnHit(AActor* OtherActor)
 void ABall::RandomRotate()
 {
 	float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
-	FRotator rotation = FRotator(Pitch, rotateValue, Roll);
-	FQuat fQuat = FQuat(rotation);
-	AddActorLocalRotation(fQuat);
+	FRotator rotator = FRotator(Pitch, rotateValue, Roll);
+	movingDirection = rotator.RotateVector(GetActorForwardVector());
 }
 
 float ABall::CalcRotAngleOnWallHit()
