@@ -18,9 +18,6 @@ class PONG_API ABall : public APawn
 private:
 
 	UPROPERTY()
-	bool isMoving = true;
-
-	UPROPERTY()
 	FVector movingDirection;
 
 	UPROPERTY()
@@ -45,6 +42,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool isMoving = false;
 
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* BallMesh;
