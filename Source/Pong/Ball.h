@@ -38,7 +38,7 @@ private:
 	float hitTimer = 0.0f;
 
 	UPROPERTY()
-	float maxHitTimer = 0.1f;
+	float maxHitTimer = 0.2f;
 
 protected:
 	// Called when the game starts or when spawned
@@ -64,6 +64,9 @@ public:
 	float speed = 1.0f;
 
 	UPROPERTY(EditAnywhere)
+	float MaxBounceAngle = 75.0f;
+
+	UPROPERTY(EditAnywhere)
 	bool DebugPrint = false;
 
 	UFUNCTION()
@@ -79,10 +82,7 @@ public:
 	void ChangeDirectionOnWallHit();
 
 	UFUNCTION()
-	float CalcRotAngleOnPlayerHit(AActor* OtherActor);
-
-	UFUNCTION()
-	float CalcAngleBetweenVectors(FVector Vector1, FVector Vector2);
+	void ChangeDirectionOnPlayerHit(AActor* OtherActor);
 
 	UFUNCTION()
 	void PrintOnScreen(FString message);

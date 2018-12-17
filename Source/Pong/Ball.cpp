@@ -70,11 +70,9 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 
 void ABall::RotateOnHit(AActor* OtherActor)
 {
-	float ResYaw, ActorYaw;
-	ActorYaw = GetActorRotation().Yaw;
+	/*float ResYaw, ActorYaw;
+	ActorYaw = GetActorRotation().Yaw;*/
 
-
-	
 	if (OtherActor->IsA(AWalls::StaticClass()))
 	{
 		ChangeDirectionOnWallHit();
@@ -82,25 +80,14 @@ void ABall::RotateOnHit(AActor* OtherActor)
 
 	if (OtherActor->IsA(AMyPlayer::StaticClass()))
 	{
-		if ((ActorYaw > 0.0f && ActorYaw < 90.0f) ||
-			(ActorYaw > -180.0f && ActorYaw < -90.0f))
-		{
-			ResYaw = -CalcRotAngleOnPlayerHit(OtherActor);
-		}
-		else
-		{
-			ResYaw = CalcRotAngleOnPlayerHit(OtherActor);
-		}
-	}
-
-
-	
+		ChangeDirectionOnPlayerHit(OtherActor);
+	}	
 }
 
 void ABall::RandomRotate()
 {
 	//float rotateValue = FMath::FRandRange(-180.0f, 180.0f);
-	float rotateValue = 50.0f;
+	float rotateValue = 89.0f;
 	FRotator rotator = FRotator(Pitch, rotateValue, Roll);
 	movingDirection = rotator.RotateVector(GetActorForwardVector());
 }
@@ -110,28 +97,54 @@ void ABall::ChangeDirectionOnWallHit()
 	// Reverse the X value
 	movingDirection = FVector(-movingDirection.X, movingDirection.Y, movingDirection.Z);
 
-	if (DebugPrint)
-	{
-		PrintOnScreen(movingDirection.ToString());
-	}	
+	if (DebugPrint) PrintOnScreen(movingDirection.ToString());
 }
 
-
-
-float ABall::CalcRotAngleOnPlayerHit(AActor * OtherActor)
+void ABall::ChangeDirectionOnPlayerHit(AActor * OtherActor)
 {
-	FVector ActorVector, ResVector;
-	ActorVector = GetActorForwardVector();
+	// Get player's mesh size and origin
+	FVector Origin, BoxExtent;
+	OtherActor->GetActorBounds(true, Origin, BoxExtent);
 
-	// Reverse the Y value
-	ResVector = FVector(ActorVector.X, -ActorVector.Y, ActorVector.Z);
+	// Get X values of Origin and BoxExtent
+	float OriginX = Origin.X;
+	float BoxExtentX = BoxExtent.X;
 
-	return CalcAngleBetweenVectors(ActorVector, ResVector);
-}
+	// Get Ball location
+	float BallPosX = GetActorLocation().X;
 
-float ABall::CalcAngleBetweenVectors(FVector Vector1, FVector Vector2)
-{	
-	return FMath::RadiansToDegrees(acosf(FVector::DotProduct(Vector1, Vector2)));
+	if ((BallPosX < OriginX + BoxExtentX) &&
+		(BallPosX > OriginX - BoxExtentX))
+	{
+		//Calc hit point
+		float hitPoint = -(OriginX - BallPosX);
+		float hitPointNormalized = hitPoint / BoxExtentX;
+		float bounceAngle = hitPointNormalized * MaxBounceAngle;
+
+		FVector vector;
+		FRotator rotator;
+
+		if (movingDirection.Y > 0.0f)
+		{
+			vector = FVector(0.0f, -1.0f, 0.0f);
+			rotator = FRotator(0.0f, bounceAngle, 0.0f);
+		}
+		else
+		{
+			vector = FVector(0.0f, 1.0f, 0.0f);
+			rotator = FRotator(0.0f, -bounceAngle, 0.0f);
+		}
+
+		
+		movingDirection = rotator.RotateVector(vector);
+
+		if (DebugPrint) PrintOnScreen(movingDirection.ToString());
+	}
+	// If not, use same logic as walls
+	else
+	{
+		ChangeDirectionOnWallHit();
+	}
 }
 
 void ABall::PrintOnScreen(FString message)
