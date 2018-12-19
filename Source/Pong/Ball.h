@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
+#include "Engine/TriggerBox.h"
 #include "Walls.h"
 #include "MyPlayer.h"
 #include "Ball.generated.h"
@@ -70,6 +71,9 @@ public:
 	// True = Right, False = Left
 	UFUNCTION(BlueprintCallable)
 	void RandomRotate(bool direction);
+
+	UFUNCTION(BlueprintCallable)
+	void ResetBall(FVector position);
 
 	UFUNCTION()
 	void ChangeDirectionOnWallHit();

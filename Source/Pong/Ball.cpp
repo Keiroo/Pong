@@ -55,10 +55,17 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 {
 	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
 	{
-		if (!hasHit)
+		if (OtherActor->IsA(ATriggerBox::StaticClass()))
 		{
-			RotateOnHit(OtherActor);
-			hasHit = true;
+			Destroy();
+		}
+		else
+		{
+			if (!hasHit)
+			{
+				RotateOnHit(OtherActor);
+				hasHit = true;
+			}
 		}
 	}	
 }
@@ -83,6 +90,16 @@ void ABall::RandomRotate(bool direction)
 
 	if (direction) movingDirection = rotator.RotateVector(GetActorRightVector());
 	else movingDirection = rotator.RotateVector(GetActorRightVector());
+}
+
+void ABall::ResetBall(FVector position)
+{
+	isMoving = false;
+	SetActorLocation(FVector(0.0f, 0.0f, 10.0f));
+	movingDirection = FVector::ZeroVector;
+	FloatingPawnMovement->Acceleration = 0.0f;
+	FloatingPawnMovement->StopMovementImmediately();
+	PrintOnScreen(FString::SanitizeFloat(FloatingPawnMovement->Acceleration));
 }
 
 void ABall::ChangeDirectionOnWallHit()
