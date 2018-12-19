@@ -95,8 +95,15 @@ void ABall::RandomRotate(bool direction)
 	float rotateValue = FMath::FRandRange(-MaxBounceAngle, MaxBounceAngle);
 	FRotator rotator = FRotator(0.0f, rotateValue, 0.0f);
 
-	if (direction) movingDirection = rotator.RotateVector(GetActorRightVector());
-	else movingDirection = rotator.RotateVector(GetActorRightVector());
+	if (direction)
+	{
+		movingDirection = rotator.RotateVector(GetActorRightVector());
+	}
+	else
+	{
+		FVector vector = GetActorRightVector();
+		movingDirection = rotator.RotateVector(FVector(vector.X, -vector.Y, vector.Z));
+	}
 }
 
 void ABall::ChangeDirectionOnWallHit()
