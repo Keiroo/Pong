@@ -14,6 +14,9 @@ ABall::ABall()
 
 	BallMesh->OnComponentHit.AddDynamic(this, &ABall::OnComponentHit);
 	BallMesh->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnOverlapBegin);
+
+	//AIControllerClass = AAIController::StaticClass();
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
 // Called when the game starts or when spawned
