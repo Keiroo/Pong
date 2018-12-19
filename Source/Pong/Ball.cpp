@@ -13,7 +13,7 @@ ABall::ABall()
 	FloatingPawnMovement = CreateDefaultSubobject<UFloatingPawnMovement>("FloatingPawnMovement");
 
 	BallMesh->OnComponentHit.AddDynamic(this, &ABall::OnComponentHit);
-
+	BallMesh->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnOverlapBegin);
 }
 
 // Called when the game starts or when spawned
@@ -61,6 +61,17 @@ void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, U
 			hasHit = true;
 		}
 	}	
+}
+
+void ABall::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+{
+	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL))
+	{
+		if (OtherActor->IsA(ATriggerBox::StaticClass()))
+		{
+			Destroy();
+		}
+	}
 }
 
 void ABall::RotateOnHit(AActor* OtherActor)
