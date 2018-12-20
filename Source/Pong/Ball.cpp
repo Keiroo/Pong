@@ -1,11 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #include "Ball.h"
 
-// Sets default values
 ABall::ABall()
 {
- 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Create default components
@@ -15,11 +11,9 @@ ABall::ABall()
 	BallMesh->OnComponentHit.AddDynamic(this, &ABall::OnComponentHit);
 	BallMesh->OnComponentBeginOverlap.AddDynamic(this, &ABall::OnOverlapBegin);
 
-	//AIControllerClass = AAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 }
 
-// Called when the game starts or when spawned
 void ABall::BeginPlay()
 {
 	Super::BeginPlay();
@@ -28,7 +22,6 @@ void ABall::BeginPlay()
 	RandomRotate(true);
 }
 
-// Called every frame
 void ABall::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -47,11 +40,9 @@ void ABall::Tick(float DeltaTime)
 	}
 }
 
-// Called to bind functionality to input
 void ABall::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
 }
 
 void ABall::OnComponentHit(UPrimitiveComponent * HitComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, FVector NormalImpulse, const FHitResult & Hit)
@@ -147,9 +138,7 @@ void ABall::ChangeDirectionOnPlayerHit(AActor * OtherActor)
 		{
 			vector = FVector(0.0f, 1.0f, 0.0f);
 			rotator = FRotator(0.0f, -bounceAngle, 0.0f);
-		}
-
-		
+		}		
 		movingDirection = rotator.RotateVector(vector);
 
 		if (DebugPrint) PrintOnScreen(movingDirection.ToString());
