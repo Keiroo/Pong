@@ -7,7 +7,6 @@
 #include "Components/SphereComponent.h"
 #include "GameFramework/FloatingPawnMovement.h"
 #include "Engine/TriggerBox.h"
-#include "AIModule/Classes/AIController.h"
 #include "Walls.h"
 #include "MyPlayer.h"
 #include "Ball.generated.h"
